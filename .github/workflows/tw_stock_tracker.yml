@@ -32,6 +32,6 @@ jobs:
       - name: 執行台股追蹤程式 (Run script)
         env:
           # 將 GitHub Secrets 中的 webhook URL 傳遞給環境變數
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         # 請確認這裡的檔名與你上傳到 GitHub 的 Python 檔名一致
         run: python tw_stock_tracker.py
