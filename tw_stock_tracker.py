@@ -117,20 +117,25 @@ def send_to_discord(ticker, info, close_price, pct_change, image_buffer, summary
     trend_emoji = "📈" if pct_change > 0 else "📉"
     trend_text = "漲幅" if pct_change > 0 else "跌幅"
     
+    # 取得純數字代號，將 2330.TW 轉為 2330 以符合台灣雅虎股市的網址格式
+    stock_id = ticker.split('.')[0]
+    yahoo_tw_tech_url = f"https://tw.stock.yahoo.com/quote/{stock_id}/technical-analysis"
+    
     message_content = (
         f"{trend_emoji} **{ticker} - {company_name}**\n"
         f"🏢 版塊: {sector_cn} ({sector_en})\n"
         f"📊 本益比 (P/E): **{pe_ratio}** |  💰 股息率: **{div_yield}**\n"
         f"📝 簡介: {summary}\n"
         f"🔹 收盤價: NT${close_price:.2f}\n"
-        f"{trend_emoji} {trend_text}: **{pct_change * 100:.2f}%**" 
+        f"{trend_emoji} {trend_text}: **{pct_change * 100:.2f}%**\n"
+        f"🔗 雅虎技術分析: {yahoo_tw_tech_url}"
     )
     
     payload = {"content": message_content}
     image_buffer.seek(0)
     files = {"file": (f"{ticker}_1Y.png", image_buffer, "image/png")}
     requests.post(WEBHOOK_URL, data=payload, files=files)
-
+    
 def process_and_send_list(stock_series, title_msg, tw_info, line_color):
     if stock_series.empty:
         print(f"{title_msg} 無符合資料")
